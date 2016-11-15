@@ -52,7 +52,7 @@ void main()
     uint index = gl_GlobalInvocationID.x;
 	// Don't try to write beyond particle count
     if (index >= ubo.particleCount)
-		return;
+			return;
 
     // Read position and velocity
 		vec2 vPos = particlesA[index].pos.xy;
