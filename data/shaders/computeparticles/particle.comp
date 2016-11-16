@@ -58,6 +58,46 @@ void main()
 		vec2 vPos = particlesA[index].pos.xy;
     vec2 vVel = particlesA[index].vel.xy;
 
+		vec2 v1 = vec2(0.0f);
+		vec2 v2 = vec2(0.0f);
+		vec2 v3 = vec2(0.0f);
+		vec2 com = vec2(0.0f);
+
+		float n_count1 = 0.0f;
+
+		for (int i = 0; i < ubo.particleCount; i++) {
+			if (i == index) 
+				continue;
+
+			vec2 b = particlesA[i].pos.xy;
+
+			float l = length(b - vPos);
+
+			if (l < ubo.rule1Distance) {
+				com += b;
+				n_count1 += 1.0f;
+			}
+
+			if (l < ubo.rule2Distance) {
+				v2 -= b - vPos;
+			}
+
+			if (l < ubo.rule3Distance) {
+				v3 += particlesA[i].vel.xy;
+			}
+		}
+
+		if (n_count1 > 0.0f) {
+			com /= n_count1;
+			v1 = (com - vPos) * ubo.rule1Scale;
+		}
+
+		v2 *= ubo.rule2Scale;
+
+		v3 *= ubo.rule3Scale;
+
+		vVel += v1 + v2 + v3;
+
 		// clamp velocity for a more pleasing simulation.
 		vVel = normalize(vVel) * clamp(length(vVel), 0.0, 0.1);
 
